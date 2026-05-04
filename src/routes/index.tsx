@@ -31,7 +31,7 @@ function HomePage() {
   useEffect(() => {
     supabase
       .from("apps")
-      .select("id,package_name,name,category,version,rating,downloads,mod_label,size_mb")
+      .select("id,package_name,name,category,version,rating,downloads,mod_label,size_mb,icon_url")
       .order("downloads", { ascending: false })
       .then(({ data }) => {
         setApps((data ?? []) as AppRow[]);

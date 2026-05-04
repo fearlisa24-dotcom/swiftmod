@@ -88,6 +88,7 @@ function AppDetail() {
     <article className="space-y-6">
       <div className="flex flex-col gap-6 rounded-lg border border-border bg-card p-6 md:flex-row">
         <AppIcon
+          iconUrl={(app as AppFull & { icon_url?: string | null }).icon_url}
           packageName={app.package_name}
           name={app.name}
           size={120}
