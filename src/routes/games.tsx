@@ -12,7 +12,7 @@ export function ListPage({ type, title }: { type: "game" | "app"; title: string 
   useEffect(() => {
     supabase
       .from("apps")
-      .select("id,package_name,name,category,version,rating,downloads,mod_label,size_mb")
+      .select("id,package_name,name,category,version,rating,downloads,mod_label,size_mb,icon_url")
       .eq("type", type)
       .order("downloads", { ascending: false })
       .then(({ data }) => setApps((data ?? []) as AppRow[]));
