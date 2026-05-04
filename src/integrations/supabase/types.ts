@@ -55,6 +55,7 @@ export type Database = {
           created_at: string
           description: string | null
           downloads: number
+          icon_url: string | null
           id: string
           is_featured: boolean
           is_trending: boolean
@@ -72,6 +73,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           downloads?: number
+          icon_url?: string | null
           id?: string
           is_featured?: boolean
           is_trending?: boolean
@@ -89,6 +91,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           downloads?: number
+          icon_url?: string | null
           id?: string
           is_featured?: boolean
           is_trending?: boolean
