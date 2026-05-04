@@ -9,15 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TrendingRouteImport } from './routes/trending'
 import { Route as TopicsRouteImport } from './routes/topics'
+import { Route as RankingsRouteImport } from './routes/rankings'
 import { Route as GamesRouteImport } from './routes/games'
 import { Route as AppsRouteImport } from './routes/apps'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppPackageNameRouteImport } from './routes/app.$packageName'
 
+const TrendingRoute = TrendingRouteImport.update({
+  id: '/trending',
+  path: '/trending',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TopicsRoute = TopicsRouteImport.update({
   id: '/topics',
   path: '/topics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RankingsRoute = RankingsRouteImport.update({
+  id: '/rankings',
+  path: '/rankings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GamesRoute = GamesRouteImport.update({
@@ -45,14 +57,18 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/apps': typeof AppsRoute
   '/games': typeof GamesRoute
+  '/rankings': typeof RankingsRoute
   '/topics': typeof TopicsRoute
+  '/trending': typeof TrendingRoute
   '/app/$packageName': typeof AppPackageNameRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/apps': typeof AppsRoute
   '/games': typeof GamesRoute
+  '/rankings': typeof RankingsRoute
   '/topics': typeof TopicsRoute
+  '/trending': typeof TrendingRoute
   '/app/$packageName': typeof AppPackageNameRoute
 }
 export interface FileRoutesById {
@@ -60,32 +76,72 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/apps': typeof AppsRoute
   '/games': typeof GamesRoute
+  '/rankings': typeof RankingsRoute
   '/topics': typeof TopicsRoute
+  '/trending': typeof TrendingRoute
   '/app/$packageName': typeof AppPackageNameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/apps' | '/games' | '/topics' | '/app/$packageName'
+  fullPaths:
+    | '/'
+    | '/apps'
+    | '/games'
+    | '/rankings'
+    | '/topics'
+    | '/trending'
+    | '/app/$packageName'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/apps' | '/games' | '/topics' | '/app/$packageName'
-  id: '__root__' | '/' | '/apps' | '/games' | '/topics' | '/app/$packageName'
+  to:
+    | '/'
+    | '/apps'
+    | '/games'
+    | '/rankings'
+    | '/topics'
+    | '/trending'
+    | '/app/$packageName'
+  id:
+    | '__root__'
+    | '/'
+    | '/apps'
+    | '/games'
+    | '/rankings'
+    | '/topics'
+    | '/trending'
+    | '/app/$packageName'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppsRoute: typeof AppsRoute
   GamesRoute: typeof GamesRoute
+  RankingsRoute: typeof RankingsRoute
   TopicsRoute: typeof TopicsRoute
+  TrendingRoute: typeof TrendingRoute
   AppPackageNameRoute: typeof AppPackageNameRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/trending': {
+      id: '/trending'
+      path: '/trending'
+      fullPath: '/trending'
+      preLoaderRoute: typeof TrendingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/topics': {
       id: '/topics'
       path: '/topics'
       fullPath: '/topics'
       preLoaderRoute: typeof TopicsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rankings': {
+      id: '/rankings'
+      path: '/rankings'
+      fullPath: '/rankings'
+      preLoaderRoute: typeof RankingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/games': {
@@ -123,7 +179,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppsRoute: AppsRoute,
   GamesRoute: GamesRoute,
+  RankingsRoute: RankingsRoute,
   TopicsRoute: TopicsRoute,
+  TrendingRoute: TrendingRoute,
   AppPackageNameRoute: AppPackageNameRoute,
 }
 export const routeTree = rootRouteImport
