@@ -14,7 +14,95 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      app_versions: {
+        Row: {
+          app_id: string
+          id: string
+          notes: string | null
+          released_on: string
+          size_mb: number
+          version: string
+        }
+        Insert: {
+          app_id: string
+          id?: string
+          notes?: string | null
+          released_on?: string
+          size_mb?: number
+          version: string
+        }
+        Update: {
+          app_id?: string
+          id?: string
+          notes?: string | null
+          released_on?: string
+          size_mb?: number
+          version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "app_versions_app_id_fkey"
+            columns: ["app_id"]
+            isOneToOne: false
+            referencedRelation: "apps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      apps: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          downloads: number
+          id: string
+          is_featured: boolean
+          is_trending: boolean
+          mod_label: string | null
+          name: string
+          package_name: string
+          rating: number
+          size_mb: number
+          type: string
+          updated_on: string
+          version: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          downloads?: number
+          id?: string
+          is_featured?: boolean
+          is_trending?: boolean
+          mod_label?: string | null
+          name: string
+          package_name: string
+          rating?: number
+          size_mb?: number
+          type?: string
+          updated_on?: string
+          version?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          downloads?: number
+          id?: string
+          is_featured?: boolean
+          is_trending?: boolean
+          mod_label?: string | null
+          name?: string
+          package_name?: string
+          rating?: number
+          size_mb?: number
+          type?: string
+          updated_on?: string
+          version?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
