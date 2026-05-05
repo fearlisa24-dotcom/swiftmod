@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { Star, ShieldCheck, Download, Zap, Check, ChevronRight, ThumbsUp, ThumbsDown, MessageSquare, ChevronDown } from "lucide-react";
+import { useEffect, useMemo, useState, useCallback } from "react";
+import { Star, ShieldCheck, Download, Zap, Check, ChevronRight, ThumbsUp, MessageSquare, ChevronDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppIcon } from "@/components/AppIcon";
 import { SafetyBar } from "@/components/SafetyBar";
 import { formatDownloads } from "@/lib/format";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/app/$packageName")({
   component: AppDetail,
@@ -43,38 +44,14 @@ interface VersionRow {
   notes: string | null;
 }
 
-const COMMENTS = [
-  {
-    id: "1",
-    user: "ModMaster_X",
-    role: "Mod Creator",
-    avatar: "MX",
-    time: "2 days ago",
-    body: "Latest patch fixes the multiplayer crash on Android 14. Tested on Pixel 8 Pro — runs at a stable 60fps. Let me know if you hit any issues!",
-    helpful: 142,
-    notHelpful: 4,
-  },
-  {
-    id: "2",
-    user: "GameFan99",
-    role: null,
-    avatar: "GF",
-    time: "5 hours ago",
-    body: "Works perfectly. Unlimited resources unlocked as advertised. Install was clean — no ads, no weird permissions.",
-    helpful: 38,
-    notHelpful: 1,
-  },
-  {
-    id: "3",
-    user: "SafeInstaller",
-    role: "Verified",
-    avatar: "SI",
-    time: "1 day ago",
-    body: "Scanned the APK with VirusTotal — 0/72 detections. Confirmed safe. Thanks for the quick mod release!",
-    helpful: 87,
-    notHelpful: 0,
-  },
-];
+interface CommentRow {
+  id: string;
+  user_id: string;
+  body: string;
+  helpful: number;
+  created_at: string;
+  display_name?: string | null;
+}
 
 const RATING_DIST = [
   { stars: 5, pct: 78 },
@@ -86,11 +63,35 @@ const RATING_DIST = [
 
 function AppDetail() {
   const { packageName } = Route.useParams();
+  const { user } = useAuth();
   const [app, setApp] = useState<AppFull | null>(null);
   const [versions, setVersions] = useState<VersionRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [versionOpen, setVersionOpen] = useState(false);
   const [comment, setComment] = useState("");
+  const [comments, setComments] = useState<CommentRow[]>([]);
+  const [myStars, setMyStars] = useState(0);
+  const [posting, setPosting] = useState(false);
+
+  const loadComments = useCallback(async (appId: string) => {
+    const { data } = await supabase
+      .from("comments")
+      .select("id,user_id,body,helpful,created_at")
+      .eq("app_id", appId)
+      .order("created_at", { ascending: false })
+      .limit(50);
+    const rows = (data ?? []) as CommentRow[];
+    const ids = Array.from(new Set(rows.map((r) => r.user_id)));
+    if (ids.length) {
+      const { data: profs } = await supabase
+        .from("profiles")
+        .select("user_id,display_name")
+        .in("user_id", ids);
+      const map = new Map((profs ?? []).map((p) => [p.user_id, p.display_name]));
+      rows.forEach((r) => (r.display_name = map.get(r.user_id) ?? null));
+    }
+    setComments(rows);
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -107,10 +108,41 @@ function AppDetail() {
           .eq("app_id", data.id)
           .order("released_on", { ascending: false });
         setVersions((v ?? []) as VersionRow[]);
+        await loadComments(data.id);
+        if (user) {
+          const { data: r } = await supabase
+            .from("ratings")
+            .select("stars")
+            .eq("app_id", data.id)
+            .eq("user_id", user.id)
+            .maybeSingle();
+          setMyStars(r?.stars ?? 0);
+        }
       }
       setLoading(false);
     })();
-  }, [packageName]);
+  }, [packageName, user, loadComments]);
+
+  const postComment = async () => {
+    if (!user || !app || comment.trim().length < 3) return;
+    setPosting(true);
+    const { error } = await supabase
+      .from("comments")
+      .insert({ app_id: app.id, user_id: user.id, body: comment.trim() });
+    setPosting(false);
+    if (!error) {
+      setComment("");
+      await loadComments(app.id);
+    }
+  };
+
+  const rate = async (stars: number) => {
+    if (!user || !app) return;
+    setMyStars(stars);
+    await supabase
+      .from("ratings")
+      .upsert({ app_id: app.id, user_id: user.id, stars }, { onConflict: "app_id,user_id" });
+  };
 
   const rows: VersionRow[] = useMemo(
     () =>
@@ -316,71 +348,93 @@ function AppDetail() {
         </div>
       </section>
 
+      {/* Your rating */}
+      <section className="rounded-lg border border-border bg-card p-5">
+        <h2 className="mb-3 text-sm font-bold">Your Rating</h2>
+        {user ? (
+          <div className="flex items-center gap-1">
+            {[1, 2, 3, 4, 5].map((s) => (
+              <button key={s} type="button" onClick={() => rate(s)} aria-label={`Rate ${s}`}>
+                <Star
+                  className={`h-6 w-6 ${s <= myStars ? "fill-amber-400 stroke-amber-400" : "stroke-muted-foreground"}`}
+                />
+              </button>
+            ))}
+            {myStars > 0 && <span className="ml-2 text-xs text-muted-foreground">You rated {myStars}/5</span>}
+          </div>
+        ) : (
+          <Link to="/auth" className="text-sm text-brand hover:underline">Sign in to rate this app</Link>
+        )}
+      </section>
+
       {/* Community Discussion */}
       <section className="rounded-lg border border-border bg-card p-5">
         <div className="mb-4 flex items-center gap-2">
           <MessageSquare className="h-4 w-4 text-primary" />
           <h2 className="text-sm font-bold">Community Discussion</h2>
-          <span className="text-xs text-muted-foreground">({COMMENTS.length} comments)</span>
+          <span className="text-xs text-muted-foreground">({comments.length} comments)</span>
         </div>
 
         {/* Compose */}
-        <div className="mb-5 rounded-md border border-border bg-background p-3">
-          <textarea
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            placeholder="Share your experience (50+ words earns XP)…"
-            rows={3}
-            className="w-full resize-none bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-          />
-          <div className="mt-2 flex items-center justify-between">
-            <span className="text-xs text-muted-foreground">{comment.trim().split(/\s+/).filter(Boolean).length} words</span>
-            <button
-              type="button"
-              className="rounded-md px-3 py-1.5 text-xs font-bold text-white"
-              style={{ backgroundColor: "#00c853" }}
-            >
-              Post Comment
-            </button>
+        {user ? (
+          <div className="mb-5 rounded-md border border-border bg-background p-3">
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="Share your experience (50+ words earns XP)…"
+              rows={3}
+              className="w-full resize-none bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+            />
+            <div className="mt-2 flex items-center justify-between">
+              <span className="text-xs text-muted-foreground">{comment.trim().split(/\s+/).filter(Boolean).length} words</span>
+              <button
+                type="button"
+                onClick={postComment}
+                disabled={posting || comment.trim().length < 3}
+                className="rounded-md px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50"
+                style={{ backgroundColor: "#22C55E" }}
+              >
+                {posting ? "Posting…" : "Post Comment"}
+              </button>
+            </div>
           </div>
-        </div>
+        ) : (
+          <Link to="/auth" className="mb-5 block rounded-md border border-dashed border-border bg-background p-4 text-center text-sm text-muted-foreground hover:border-primary hover:text-primary">
+            Sign in to post a comment
+          </Link>
+        )}
 
-        <ul className="space-y-4">
-          {COMMENTS.map((c) => (
-            <li key={c.id} className="flex gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                {c.avatar}
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-sm font-bold text-foreground">{c.user}</span>
-                  {c.role === "Mod Creator" && (
-                    <span className="rounded px-1.5 py-0.5 text-[10px] font-bold uppercase text-white" style={{ backgroundColor: "#ff6d00" }}>
-                      Mod Creator
-                    </span>
-                  )}
-                  {c.role === "Verified" && (
-                    <span className="rounded px-1.5 py-0.5 text-[10px] font-bold uppercase text-white" style={{ backgroundColor: "#00c853" }}>
-                      Verified
-                    </span>
-                  )}
-                  <span className="text-xs text-muted-foreground">{c.time}</span>
-                </div>
-                <p className="mt-1 text-sm text-foreground/80">{c.body}</p>
-                <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
-                  <span>Was this helpful?</span>
-                  <button type="button" className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 hover:border-primary hover:text-primary">
-                    <ThumbsUp className="h-3 w-3" /> {c.helpful}
-                  </button>
-                  <button type="button" className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 hover:border-destructive hover:text-destructive">
-                    <ThumbsDown className="h-3 w-3" /> {c.notHelpful}
-                  </button>
-                  <button type="button" className="ml-auto hover:text-brand">Reply</button>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
+        {comments.length === 0 ? (
+          <p className="text-sm text-muted-foreground">No comments yet — be the first!</p>
+        ) : (
+          <ul className="space-y-4">
+            {comments.map((c) => {
+              const name = c.display_name ?? "User";
+              const initials = name.slice(0, 2).toUpperCase();
+              return (
+                <li key={c.id} className="flex gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                    {initials}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-sm font-bold text-foreground">{name}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(c.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-sm text-foreground/80">{c.body}</p>
+                    <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
+                      <button type="button" className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 hover:border-primary hover:text-primary">
+                        <ThumbsUp className="h-3 w-3" /> {c.helpful}
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </section>
     </article>
   );
