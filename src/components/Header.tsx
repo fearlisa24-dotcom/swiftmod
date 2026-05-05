@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Search } from "lucide-react";
+import { Search, Bell, Upload, Award } from "lucide-react";
 import { useState } from "react";
 import logo from "@/assets/logo.png";
 
@@ -25,7 +25,7 @@ export function Header() {
 
         <form
           onSubmit={(e) => e.preventDefault()}
-          className="ml-auto flex h-10 max-w-xl flex-1 items-center overflow-hidden rounded-md border border-border bg-card"
+          className="ml-4 flex h-10 max-w-xl flex-1 items-center overflow-hidden rounded-md border border-border bg-card"
         >
           <input
             value={q}
@@ -41,6 +41,32 @@ export function Header() {
             Search
           </button>
         </form>
+
+        <div className="ml-auto flex items-center gap-3">
+          <button
+            className="hidden items-center gap-1.5 rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 sm:inline-flex"
+            type="button"
+          >
+            <Upload className="h-4 w-4" /> Upload Mod
+          </button>
+          <button
+            type="button"
+            aria-label="Notifications"
+            className="relative inline-flex h-9 w-9 items-center justify-center rounded-md border border-border hover:bg-secondary"
+          >
+            <Bell className="h-4 w-4" />
+            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-[#ff6d00]" />
+          </button>
+          <div className="flex items-center gap-2 rounded-full border border-border bg-secondary py-1 pl-1 pr-3">
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+              JD
+            </div>
+            <span className="hidden items-center gap-1 text-xs font-bold text-foreground md:inline-flex">
+              <Award className="h-3.5 w-3.5 text-[#ff6d00]" />
+              Lv 12 Pro
+            </span>
+          </div>
+        </div>
       </div>
 
       <div className="border-t border-border bg-card">
