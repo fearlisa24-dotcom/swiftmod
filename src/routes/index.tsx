@@ -16,7 +16,7 @@ function Section({ title, apps }: { title: string; apps: AppRow[] }) {
         <h2 className="text-lg font-bold text-foreground">{title}</h2>
         <a className="cursor-pointer text-xs text-muted-foreground hover:text-brand">more &gt;</a>
       </div>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
         {apps.map((a) => (
           <AppCard key={a.id} app={a} />
         ))}

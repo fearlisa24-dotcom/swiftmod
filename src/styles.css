@@ -44,8 +44,8 @@
 :root {
   --radius: 0.5rem;
 
-  /* Solid light grey app background per spec */
-  --background: oklch(0.965 0.003 247);
+  /* Solid light grey app background per spec (#F5F7F9) */
+  --background: oklch(0.972 0.003 247);
   --foreground: oklch(0.18 0.02 260);
 
   --card: oklch(1 0 0);

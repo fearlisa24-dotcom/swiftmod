@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FALLBACK_ICON } from "@/lib/format";
 
 interface AppIconProps {
-  iconUrl: string | null | undefined;
+  iconUrl?: string | null;
   packageName: string;
   name: string;
   size?: number;
@@ -20,20 +20,17 @@ export function AppIcon({
   className = "",
   modLabel,
   showRibbon = true,
-  rounded = "xl",
+  rounded = "lg",
 }: AppIconProps) {
-  // Prefer the direct PlayMods CDN url, fallback to Google Play icon, then placeholder.
-  const fallback = `https://play-lh.googleusercontent.com/vi/${packageName}/512`;
-  const initial = iconUrl || fallback;
-  const [src, setSrc] = useState(initial);
-  const [stage, setStage] = useState<"primary" | "google" | "placeholder">(
-    iconUrl ? "primary" : "google",
-  );
+  const primary = `https://play-lh.googleusercontent.com/vi/${packageName}/s256`;
+  const secondary = iconUrl || `https://play-lh.googleusercontent.com/vi/${packageName}/512`;
+  const [src, setSrc] = useState(primary);
+  const [stage, setStage] = useState<"primary" | "secondary" | "placeholder">("primary");
 
   const handleError = () => {
     if (stage === "primary") {
-      setSrc(fallback);
-      setStage("google");
+      setSrc(secondary);
+      setStage("secondary");
     } else {
       setSrc(FALLBACK_ICON);
       setStage("placeholder");
@@ -58,9 +55,12 @@ export function AppIcon({
         onError={handleError}
         className={`h-full w-full ${radiusClass} border border-border bg-muted object-cover`}
       />
-      {showRibbon && modLabel && (
-        <span className="absolute -right-1.5 -top-1.5 rounded-md bg-mod px-1.5 py-0.5 text-[10px] font-extrabold leading-none text-mod-foreground shadow-sm">
-          {modLabel}
+      {showRibbon && (
+        <span
+          className="absolute right-0 top-0 rounded-bl-md rounded-tr-md px-1.5 py-0.5 text-[10px] font-extrabold leading-none text-white"
+          style={{ backgroundColor: "#22C55E" }}
+        >
+          {modLabel || "MOD"}
         </span>
       )}
     </div>
