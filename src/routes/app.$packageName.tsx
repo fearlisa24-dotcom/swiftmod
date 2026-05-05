@@ -338,71 +338,93 @@ function AppDetail() {
         </div>
       </section>
 
+      {/* Your rating */}
+      <section className="rounded-lg border border-border bg-card p-5">
+        <h2 className="mb-3 text-sm font-bold">Your Rating</h2>
+        {user ? (
+          <div className="flex items-center gap-1">
+            {[1, 2, 3, 4, 5].map((s) => (
+              <button key={s} type="button" onClick={() => rate(s)} aria-label={`Rate ${s}`}>
+                <Star
+                  className={`h-6 w-6 ${s <= myStars ? "fill-amber-400 stroke-amber-400" : "stroke-muted-foreground"}`}
+                />
+              </button>
+            ))}
+            {myStars > 0 && <span className="ml-2 text-xs text-muted-foreground">You rated {myStars}/5</span>}
+          </div>
+        ) : (
+          <Link to="/auth" className="text-sm text-brand hover:underline">Sign in to rate this app</Link>
+        )}
+      </section>
+
       {/* Community Discussion */}
       <section className="rounded-lg border border-border bg-card p-5">
         <div className="mb-4 flex items-center gap-2">
           <MessageSquare className="h-4 w-4 text-primary" />
           <h2 className="text-sm font-bold">Community Discussion</h2>
-          <span className="text-xs text-muted-foreground">({COMMENTS.length} comments)</span>
+          <span className="text-xs text-muted-foreground">({comments.length} comments)</span>
         </div>
 
         {/* Compose */}
-        <div className="mb-5 rounded-md border border-border bg-background p-3">
-          <textarea
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            placeholder="Share your experience (50+ words earns XP)…"
-            rows={3}
-            className="w-full resize-none bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-          />
-          <div className="mt-2 flex items-center justify-between">
-            <span className="text-xs text-muted-foreground">{comment.trim().split(/\s+/).filter(Boolean).length} words</span>
-            <button
-              type="button"
-              className="rounded-md px-3 py-1.5 text-xs font-bold text-white"
-              style={{ backgroundColor: "#00c853" }}
-            >
-              Post Comment
-            </button>
+        {user ? (
+          <div className="mb-5 rounded-md border border-border bg-background p-3">
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="Share your experience (50+ words earns XP)…"
+              rows={3}
+              className="w-full resize-none bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+            />
+            <div className="mt-2 flex items-center justify-between">
+              <span className="text-xs text-muted-foreground">{comment.trim().split(/\s+/).filter(Boolean).length} words</span>
+              <button
+                type="button"
+                onClick={postComment}
+                disabled={posting || comment.trim().length < 3}
+                className="rounded-md px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50"
+                style={{ backgroundColor: "#22C55E" }}
+              >
+                {posting ? "Posting…" : "Post Comment"}
+              </button>
+            </div>
           </div>
-        </div>
+        ) : (
+          <Link to="/auth" className="mb-5 block rounded-md border border-dashed border-border bg-background p-4 text-center text-sm text-muted-foreground hover:border-primary hover:text-primary">
+            Sign in to post a comment
+          </Link>
+        )}
 
-        <ul className="space-y-4">
-          {COMMENTS.map((c) => (
-            <li key={c.id} className="flex gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                {c.avatar}
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-sm font-bold text-foreground">{c.user}</span>
-                  {c.role === "Mod Creator" && (
-                    <span className="rounded px-1.5 py-0.5 text-[10px] font-bold uppercase text-white" style={{ backgroundColor: "#ff6d00" }}>
-                      Mod Creator
-                    </span>
-                  )}
-                  {c.role === "Verified" && (
-                    <span className="rounded px-1.5 py-0.5 text-[10px] font-bold uppercase text-white" style={{ backgroundColor: "#00c853" }}>
-                      Verified
-                    </span>
-                  )}
-                  <span className="text-xs text-muted-foreground">{c.time}</span>
-                </div>
-                <p className="mt-1 text-sm text-foreground/80">{c.body}</p>
-                <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
-                  <span>Was this helpful?</span>
-                  <button type="button" className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 hover:border-primary hover:text-primary">
-                    <ThumbsUp className="h-3 w-3" /> {c.helpful}
-                  </button>
-                  <button type="button" className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 hover:border-destructive hover:text-destructive">
-                    <ThumbsDown className="h-3 w-3" /> {c.notHelpful}
-                  </button>
-                  <button type="button" className="ml-auto hover:text-brand">Reply</button>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
+        {comments.length === 0 ? (
+          <p className="text-sm text-muted-foreground">No comments yet — be the first!</p>
+        ) : (
+          <ul className="space-y-4">
+            {comments.map((c) => {
+              const name = c.profiles?.display_name ?? "User";
+              const initials = name.slice(0, 2).toUpperCase();
+              return (
+                <li key={c.id} className="flex gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                    {initials}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-sm font-bold text-foreground">{name}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(c.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-sm text-foreground/80">{c.body}</p>
+                    <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
+                      <button type="button" className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 hover:border-primary hover:text-primary">
+                        <ThumbsUp className="h-3 w-3" /> {c.helpful}
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </section>
     </article>
   );
