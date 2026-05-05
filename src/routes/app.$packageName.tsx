@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { Star, ShieldCheck, Download, Zap, Check, ChevronRight, ThumbsUp, ThumbsDown, MessageSquare, ChevronDown } from "lucide-react";
+import { useEffect, useMemo, useState, useCallback } from "react";
+import { Star, ShieldCheck, Download, Zap, Check, ChevronRight, ThumbsUp, MessageSquare, ChevronDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppIcon } from "@/components/AppIcon";
 import { SafetyBar } from "@/components/SafetyBar";
 import { formatDownloads } from "@/lib/format";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/app/$packageName")({
   component: AppDetail,
@@ -43,38 +44,14 @@ interface VersionRow {
   notes: string | null;
 }
 
-const COMMENTS = [
-  {
-    id: "1",
-    user: "ModMaster_X",
-    role: "Mod Creator",
-    avatar: "MX",
-    time: "2 days ago",
-    body: "Latest patch fixes the multiplayer crash on Android 14. Tested on Pixel 8 Pro — runs at a stable 60fps. Let me know if you hit any issues!",
-    helpful: 142,
-    notHelpful: 4,
-  },
-  {
-    id: "2",
-    user: "GameFan99",
-    role: null,
-    avatar: "GF",
-    time: "5 hours ago",
-    body: "Works perfectly. Unlimited resources unlocked as advertised. Install was clean — no ads, no weird permissions.",
-    helpful: 38,
-    notHelpful: 1,
-  },
-  {
-    id: "3",
-    user: "SafeInstaller",
-    role: "Verified",
-    avatar: "SI",
-    time: "1 day ago",
-    body: "Scanned the APK with VirusTotal — 0/72 detections. Confirmed safe. Thanks for the quick mod release!",
-    helpful: 87,
-    notHelpful: 0,
-  },
-];
+interface CommentRow {
+  id: string;
+  user_id: string;
+  body: string;
+  helpful: number;
+  created_at: string;
+  profiles?: { display_name: string | null; avatar_url: string | null } | null;
+}
 
 const RATING_DIST = [
   { stars: 5, pct: 78 },
@@ -86,11 +63,25 @@ const RATING_DIST = [
 
 function AppDetail() {
   const { packageName } = Route.useParams();
+  const { user } = useAuth();
   const [app, setApp] = useState<AppFull | null>(null);
   const [versions, setVersions] = useState<VersionRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [versionOpen, setVersionOpen] = useState(false);
   const [comment, setComment] = useState("");
+  const [comments, setComments] = useState<CommentRow[]>([]);
+  const [myStars, setMyStars] = useState(0);
+  const [posting, setPosting] = useState(false);
+
+  const loadComments = useCallback(async (appId: string) => {
+    const { data } = await supabase
+      .from("comments")
+      .select("id,user_id,body,helpful,created_at,profiles(display_name,avatar_url)")
+      .eq("app_id", appId)
+      .order("created_at", { ascending: false })
+      .limit(50);
+    setComments((data ?? []) as unknown as CommentRow[]);
+  }, []);
 
   useEffect(() => {
     (async () => {
