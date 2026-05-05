@@ -98,10 +98,41 @@ function AppDetail() {
           .eq("app_id", data.id)
           .order("released_on", { ascending: false });
         setVersions((v ?? []) as VersionRow[]);
+        await loadComments(data.id);
+        if (user) {
+          const { data: r } = await supabase
+            .from("ratings")
+            .select("stars")
+            .eq("app_id", data.id)
+            .eq("user_id", user.id)
+            .maybeSingle();
+          setMyStars(r?.stars ?? 0);
+        }
       }
       setLoading(false);
     })();
-  }, [packageName]);
+  }, [packageName, user, loadComments]);
+
+  const postComment = async () => {
+    if (!user || !app || comment.trim().length < 3) return;
+    setPosting(true);
+    const { error } = await supabase
+      .from("comments")
+      .insert({ app_id: app.id, user_id: user.id, body: comment.trim() });
+    setPosting(false);
+    if (!error) {
+      setComment("");
+      await loadComments(app.id);
+    }
+  };
+
+  const rate = async (stars: number) => {
+    if (!user || !app) return;
+    setMyStars(stars);
+    await supabase
+      .from("ratings")
+      .upsert({ app_id: app.id, user_id: user.id, stars }, { onConflict: "app_id,user_id" });
+  };
 
   const rows: VersionRow[] = useMemo(
     () =>
