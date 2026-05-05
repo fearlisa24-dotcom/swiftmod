@@ -409,7 +409,7 @@ function AppDetail() {
         ) : (
           <ul className="space-y-4">
             {comments.map((c) => {
-              const name = c.profiles?.display_name ?? "User";
+              const name = c.display_name ?? "User";
               const initials = name.slice(0, 2).toUpperCase();
               return (
                 <li key={c.id} className="flex gap-3">
