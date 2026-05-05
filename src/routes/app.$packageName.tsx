@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Star, ShieldCheck, Download } from "lucide-react";
+import { Star, ShieldCheck, Download, Zap, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppIcon } from "@/components/AppIcon";
 import { SafetyBar } from "@/components/SafetyBar";
@@ -23,7 +23,11 @@ interface AppFull {
   size_mb: number;
   description: string | null;
   updated_on: string;
+  icon_url?: string | null;
+  download_url?: string | null;
 }
+
+const SECURITY_ITEMS = ["No Virus", "Malware Scanned", "Verified Safe"];
 
 interface VersionRow {
   id: string;
@@ -43,7 +47,7 @@ function AppDetail() {
     (async () => {
       const { data } = await supabase
         .from("apps")
-        .select("*")
+        .select("*, download_url")
         .eq("package_name", packageName)
         .maybeSingle();
       setApp(data as AppFull | null);
@@ -111,15 +115,48 @@ function AppDetail() {
           <p className="mt-4 text-sm text-foreground/80">
             {app.description ?? "No description provided."}
           </p>
-          <button className="mt-5 inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-base font-bold text-primary-foreground transition-opacity hover:opacity-90">
-            <ShieldCheck className="h-5 w-5" />
-            <Download className="h-5 w-5" />
-            Download v{app.version} ({app.size_mb} MB)
-          </button>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <a
+              href={app.download_url ?? "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-base font-bold text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              <Download className="h-5 w-5" />
+              Download v{app.version} ({app.size_mb} MB)
+            </a>
+            <a
+              href={app.download_url ?? "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-lg border border-primary bg-card px-6 py-3 text-base font-bold text-primary transition-colors hover:bg-primary/5"
+            >
+              <ShieldCheck className="h-5 w-5" />
+              <Zap className="h-5 w-5" />
+              Fast Download
+            </a>
+          </div>
         </div>
       </div>
 
       <SafetyBar />
+
+      <section className="rounded-lg border border-border bg-card p-5">
+        <h2 className="mb-3 text-sm font-bold">Security</h2>
+        <ul className="grid gap-2 sm:grid-cols-3">
+          {SECURITY_ITEMS.map((label) => (
+            <li
+              key={label}
+              className="flex items-center gap-2 rounded-md border border-border bg-background px-3 py-2 text-sm font-medium"
+              style={{ color: "#22C55E" }}
+            >
+              <Check className="h-4 w-4" strokeWidth={3} />
+              <span>{label}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
 
       <section className="rounded-lg border border-border bg-card">
         <div className="border-b border-border px-5 py-3 text-sm font-bold">Version History</div>

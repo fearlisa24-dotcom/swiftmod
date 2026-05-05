@@ -30,6 +30,7 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "google-adsense-account", content: "ca-pub-4578595376204328" },
       { title: "PlayMods – Safe Mod APKs for Games & Apps" },
       {
         name: "description",

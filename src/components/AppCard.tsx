@@ -21,7 +21,7 @@ export function AppCard({ app }: { app: AppRow }) {
     <Link
       to="/app/$packageName"
       params={{ packageName: app.package_name }}
-      className="group flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-3 transition-colors hover:border-brand"
+      className="group flex flex-col items-center gap-2 rounded-lg border border-border bg-card p-2 transition-colors hover:border-brand"
     >
       <AppIcon
         iconUrl={app.icon_url}

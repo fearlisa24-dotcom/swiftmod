@@ -21,7 +21,7 @@ export function ListPage({ type, title }: { type: "game" | "app"; title: string 
   return (
     <section>
       <h1 className="mb-4 text-2xl font-bold">{title}</h1>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
         {apps.map((a) => (
           <AppCard key={a.id} app={a} />
         ))}
