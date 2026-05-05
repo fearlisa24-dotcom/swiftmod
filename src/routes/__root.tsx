@@ -1,7 +1,9 @@
-import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { Outlet, Link, createRootRoute, HeadContent, Scripts, useLocation } from "@tanstack/react-router";
 import appCss from "../styles.css?url";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
+import { AuthProvider } from "@/hooks/useAuth";
+import { InstallPrompt } from "@/components/InstallPrompt";
 
 function NotFoundComponent() {
   return (
@@ -31,7 +33,8 @@ export const Route = createRootRoute({
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "google-adsense-account", content: "ca-pub-4578595376204328" },
-      { title: "PlayMods – Safe Mod APKs for Games & Apps" },
+      { name: "theme-color", content: "#22C55E" },
+      { title: "SwiftMod – Safe Mod APKs for Games & Apps" },
       {
         name: "description",
         content:
@@ -47,7 +50,11 @@ export const Route = createRootRoute({
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:type", content: "website" },
     ],
-    links: [{ rel: "stylesheet", href: appCss }],
+    links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "apple-touch-icon", href: "/icon-192.png" },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -69,15 +76,20 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
+  const { pathname } = useLocation();
+  const bare = pathname === "/auth";
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <div className="mx-auto flex max-w-[1400px]">
-        <Sidebar />
-        <main className="min-w-0 flex-1 px-4 py-6">
-          <Outlet />
-        </main>
+    <AuthProvider>
+      <div className="min-h-screen bg-background">
+        {!bare && <Header />}
+        <div className="mx-auto flex max-w-[1400px]">
+          {!bare && <Sidebar />}
+          <main className="min-w-0 flex-1 px-4 py-6">
+            <Outlet />
+          </main>
+        </div>
+        <InstallPrompt />
       </div>
-    </div>
+    </AuthProvider>
   );
 }
