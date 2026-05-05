@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Star, ShieldCheck, Download } from "lucide-react";
+import { Star, ShieldCheck, Download, Zap, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppIcon } from "@/components/AppIcon";
 import { SafetyBar } from "@/components/SafetyBar";
@@ -23,7 +23,11 @@ interface AppFull {
   size_mb: number;
   description: string | null;
   updated_on: string;
+  icon_url?: string | null;
+  download_url?: string | null;
 }
+
+const SECURITY_ITEMS = ["No Virus", "Malware Scanned", "Verified Safe"];
 
 interface VersionRow {
   id: string;
