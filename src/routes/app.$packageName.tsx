@@ -50,7 +50,7 @@ interface CommentRow {
   body: string;
   helpful: number;
   created_at: string;
-  profiles?: { display_name: string | null; avatar_url: string | null } | null;
+  display_name?: string | null;
 }
 
 const RATING_DIST = [
@@ -76,11 +76,21 @@ function AppDetail() {
   const loadComments = useCallback(async (appId: string) => {
     const { data } = await supabase
       .from("comments")
-      .select("id,user_id,body,helpful,created_at,profiles(display_name,avatar_url)")
+      .select("id,user_id,body,helpful,created_at")
       .eq("app_id", appId)
       .order("created_at", { ascending: false })
       .limit(50);
-    setComments((data ?? []) as unknown as CommentRow[]);
+    const rows = (data ?? []) as CommentRow[];
+    const ids = Array.from(new Set(rows.map((r) => r.user_id)));
+    if (ids.length) {
+      const { data: profs } = await supabase
+        .from("profiles")
+        .select("user_id,display_name")
+        .in("user_id", ids);
+      const map = new Map((profs ?? []).map((p) => [p.user_id, p.display_name]));
+      rows.forEach((r) => (r.display_name = map.get(r.user_id) ?? null));
+    }
+    setComments(rows);
   }, []);
 
   useEffect(() => {
