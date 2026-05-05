@@ -54,6 +54,7 @@ export type Database = {
           category: string
           created_at: string
           description: string | null
+          download_url: string | null
           downloads: number
           icon_url: string | null
           id: string
@@ -72,6 +73,7 @@ export type Database = {
           category: string
           created_at?: string
           description?: string | null
+          download_url?: string | null
           downloads?: number
           icon_url?: string | null
           id?: string
@@ -90,6 +92,7 @@ export type Database = {
           category?: string
           created_at?: string
           description?: string | null
+          download_url?: string | null
           downloads?: number
           icon_url?: string | null
           id?: string
