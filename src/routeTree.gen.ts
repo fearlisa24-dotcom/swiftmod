@@ -13,6 +13,7 @@ import { Route as TrendingRouteImport } from './routes/trending'
 import { Route as TopicsRouteImport } from './routes/topics'
 import { Route as RankingsRouteImport } from './routes/rankings'
 import { Route as GamesRouteImport } from './routes/games'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AppsRouteImport } from './routes/apps'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppPackageNameRouteImport } from './routes/app.$packageName'
@@ -37,6 +38,11 @@ const GamesRoute = GamesRouteImport.update({
   path: '/games',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppsRoute = AppsRouteImport.update({
   id: '/apps',
   path: '/apps',
@@ -56,6 +62,7 @@ const AppPackageNameRoute = AppPackageNameRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/apps': typeof AppsRoute
+  '/auth': typeof AuthRoute
   '/games': typeof GamesRoute
   '/rankings': typeof RankingsRoute
   '/topics': typeof TopicsRoute
@@ -65,6 +72,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/apps': typeof AppsRoute
+  '/auth': typeof AuthRoute
   '/games': typeof GamesRoute
   '/rankings': typeof RankingsRoute
   '/topics': typeof TopicsRoute
@@ -75,6 +83,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/apps': typeof AppsRoute
+  '/auth': typeof AuthRoute
   '/games': typeof GamesRoute
   '/rankings': typeof RankingsRoute
   '/topics': typeof TopicsRoute
@@ -86,6 +95,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/apps'
+    | '/auth'
     | '/games'
     | '/rankings'
     | '/topics'
@@ -95,6 +105,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/apps'
+    | '/auth'
     | '/games'
     | '/rankings'
     | '/topics'
@@ -104,6 +115,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/apps'
+    | '/auth'
     | '/games'
     | '/rankings'
     | '/topics'
@@ -114,6 +126,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppsRoute: typeof AppsRoute
+  AuthRoute: typeof AuthRoute
   GamesRoute: typeof GamesRoute
   RankingsRoute: typeof RankingsRoute
   TopicsRoute: typeof TopicsRoute
@@ -151,6 +164,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GamesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/apps': {
       id: '/apps'
       path: '/apps'
@@ -178,6 +198,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppsRoute: AppsRoute,
+  AuthRoute: AuthRoute,
   GamesRoute: GamesRoute,
   RankingsRoute: RankingsRoute,
   TopicsRoute: TopicsRoute,
@@ -187,3 +208,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
