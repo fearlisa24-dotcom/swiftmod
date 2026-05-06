@@ -22,8 +22,8 @@ export function AppIcon({
   showRibbon = true,
   rounded = "lg",
 }: AppIconProps) {
-  const primary = `https://play-lh.googleusercontent.com/vi/${packageName}/s256`;
-  const secondary = iconUrl || `https://play-lh.googleusercontent.com/vi/${packageName}/512`;
+  const primary = iconUrl || `https://play-lh.googleusercontent.com/vi/${packageName}/s256`;
+  const secondary = `https://play-lh.googleusercontent.com/vi/${packageName}/s256`;
   const [src, setSrc] = useState(primary);
   const [stage, setStage] = useState<"primary" | "secondary" | "placeholder">("primary");
 
