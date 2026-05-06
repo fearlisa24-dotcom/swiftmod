@@ -250,26 +250,24 @@ function AppDetail() {
           </p>
 
           <div className="mt-5 flex flex-wrap gap-3">
-            <a
-              href={app.download_url ?? "#"}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/download/$packageName"
+              params={{ packageName: app.package_name }}
               className="inline-flex items-center gap-2 rounded-lg px-6 py-3 text-base font-bold text-white transition-opacity hover:opacity-90"
               style={{ backgroundColor: "#00c853" }}
             >
               <Download className="h-5 w-5" />
               Download APK v{app.version} ({app.size_mb} MB)
-            </a>
-            <a
-              href={app.download_url ?? "#"}
-              target="_blank"
-              rel="noopener noreferrer"
+            </Link>
+            <Link
+              to="/download/$packageName"
+              params={{ packageName: app.package_name }}
               className="inline-flex items-center gap-2 rounded-lg border border-primary bg-card px-6 py-3 text-base font-bold text-primary transition-colors hover:bg-primary/5"
             >
               <ShieldCheck className="h-5 w-5" />
               <Zap className="h-5 w-5" />
               Fast Download
-            </a>
+            </Link>
           </div>
         </div>
       </div>
