@@ -2,6 +2,7 @@ import { Outlet, Link, createRootRoute, HeadContent, Scripts, useLocation } from
 import appCss from "../styles.css?url";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
+import { MobileNav } from "@/components/MobileNav";
 import { AuthProvider } from "@/hooks/useAuth";
 import { InstallPrompt } from "@/components/InstallPrompt";
 
@@ -84,10 +85,11 @@ function RootComponent() {
         {!bare && <Header />}
         <div className="mx-auto flex max-w-[1400px]">
           {!bare && <Sidebar />}
-          <main className="min-w-0 flex-1 px-4 py-6">
+          <main className="min-w-0 flex-1 px-3 py-4 pb-20 sm:px-4 sm:py-6 md:pb-6">
             <Outlet />
           </main>
         </div>
+        {!bare && <MobileNav />}
         <InstallPrompt />
       </div>
     </AuthProvider>
