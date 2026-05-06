@@ -20,7 +20,7 @@ export function HeroCarousel({ apps }: { apps: AppRow[] }) {
   return (
     <div className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-brand/10 via-card to-primary/10">
       <Link
-        to="/app/$packageName"
+        to="/download/$packageName"
         params={{ packageName: a.package_name }}
         className="flex items-center gap-5 p-6 sm:p-8"
       >

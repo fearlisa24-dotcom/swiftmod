@@ -16,7 +16,9 @@ import { Route as GamesRouteImport } from './routes/games'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AppsRouteImport } from './routes/apps'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DownloadPackageNameRouteImport } from './routes/download.$packageName'
 import { Route as AppPackageNameRouteImport } from './routes/app.$packageName'
+import { Route as ApiPublicFetchDownloadRouteImport } from './routes/api/public/fetch-download'
 
 const TrendingRoute = TrendingRouteImport.update({
   id: '/trending',
@@ -53,9 +55,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DownloadPackageNameRoute = DownloadPackageNameRouteImport.update({
+  id: '/download/$packageName',
+  path: '/download/$packageName',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppPackageNameRoute = AppPackageNameRouteImport.update({
   id: '/app/$packageName',
   path: '/app/$packageName',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicFetchDownloadRoute = ApiPublicFetchDownloadRouteImport.update({
+  id: '/api/public/fetch-download',
+  path: '/api/public/fetch-download',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -68,6 +80,8 @@ export interface FileRoutesByFullPath {
   '/topics': typeof TopicsRoute
   '/trending': typeof TrendingRoute
   '/app/$packageName': typeof AppPackageNameRoute
+  '/download/$packageName': typeof DownloadPackageNameRoute
+  '/api/public/fetch-download': typeof ApiPublicFetchDownloadRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +92,8 @@ export interface FileRoutesByTo {
   '/topics': typeof TopicsRoute
   '/trending': typeof TrendingRoute
   '/app/$packageName': typeof AppPackageNameRoute
+  '/download/$packageName': typeof DownloadPackageNameRoute
+  '/api/public/fetch-download': typeof ApiPublicFetchDownloadRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +105,8 @@ export interface FileRoutesById {
   '/topics': typeof TopicsRoute
   '/trending': typeof TrendingRoute
   '/app/$packageName': typeof AppPackageNameRoute
+  '/download/$packageName': typeof DownloadPackageNameRoute
+  '/api/public/fetch-download': typeof ApiPublicFetchDownloadRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +119,8 @@ export interface FileRouteTypes {
     | '/topics'
     | '/trending'
     | '/app/$packageName'
+    | '/download/$packageName'
+    | '/api/public/fetch-download'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +131,8 @@ export interface FileRouteTypes {
     | '/topics'
     | '/trending'
     | '/app/$packageName'
+    | '/download/$packageName'
+    | '/api/public/fetch-download'
   id:
     | '__root__'
     | '/'
@@ -121,6 +143,8 @@ export interface FileRouteTypes {
     | '/topics'
     | '/trending'
     | '/app/$packageName'
+    | '/download/$packageName'
+    | '/api/public/fetch-download'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +156,8 @@ export interface RootRouteChildren {
   TopicsRoute: typeof TopicsRoute
   TrendingRoute: typeof TrendingRoute
   AppPackageNameRoute: typeof AppPackageNameRoute
+  DownloadPackageNameRoute: typeof DownloadPackageNameRoute
+  ApiPublicFetchDownloadRoute: typeof ApiPublicFetchDownloadRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -185,11 +211,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/download/$packageName': {
+      id: '/download/$packageName'
+      path: '/download/$packageName'
+      fullPath: '/download/$packageName'
+      preLoaderRoute: typeof DownloadPackageNameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/$packageName': {
       id: '/app/$packageName'
       path: '/app/$packageName'
       fullPath: '/app/$packageName'
       preLoaderRoute: typeof AppPackageNameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/fetch-download': {
+      id: '/api/public/fetch-download'
+      path: '/api/public/fetch-download'
+      fullPath: '/api/public/fetch-download'
+      preLoaderRoute: typeof ApiPublicFetchDownloadRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -204,6 +244,8 @@ const rootRouteChildren: RootRouteChildren = {
   TopicsRoute: TopicsRoute,
   TrendingRoute: TrendingRoute,
   AppPackageNameRoute: AppPackageNameRoute,
+  DownloadPackageNameRoute: DownloadPackageNameRoute,
+  ApiPublicFetchDownloadRoute: ApiPublicFetchDownloadRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
