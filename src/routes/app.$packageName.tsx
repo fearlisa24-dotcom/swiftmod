@@ -260,7 +260,7 @@ function AppDetail() {
           <div className="text-xs uppercase tracking-wide text-muted-foreground">
             {app.type} · {app.category}
           </div>
-          <h1 className="mt-1 text-2xl font-bold text-foreground">{app.name}</h1>
+          <h1 className="mt-1 text-2xl font-bold text-foreground">{app.name} Mod APK v{app.version}</h1>
 
           <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
             <span className="flex items-center gap-1">
