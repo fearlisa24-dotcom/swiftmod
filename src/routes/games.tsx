@@ -4,7 +4,22 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppCard, type AppRow } from "@/components/AppCard";
 
 export const Route = createFileRoute("/games")({
-  component: () => <ListPage type="game" title="Games" />,
+  component: () => <ListPage type="game" title="Mod APK Games — All Categories" />,
+  head: () => {
+    const t = "Mod APK Games — Best Modded Android Games | Swift Mod";
+    const d = "Download the best modded Android games. All mods verified and updated daily. Unlimited resources, mod menus and premium features.";
+    return {
+      meta: [
+        { title: t },
+        { name: "description", content: d },
+        { property: "og:title", content: t },
+        { property: "og:description", content: d },
+        { name: "twitter:title", content: t },
+        { name: "twitter:description", content: d },
+      ],
+      links: [{ rel: "canonical", href: "https://swiftmod.lovable.app/games" }],
+    };
+  },
 });
 
 export function ListPage({ type, title }: { type: "game" | "app"; title: string }) {
