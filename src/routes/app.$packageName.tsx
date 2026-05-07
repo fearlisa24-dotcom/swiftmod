@@ -11,12 +11,29 @@ import { useAuth } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/app/$packageName")({
   component: AppDetail,
-  head: ({ params }) => ({
-    meta: [
-      { title: `${params.packageName} – Download Mod APK | PlayMods` },
-      { name: "description", content: `Download the latest mod APK for ${params.packageName}. Verified safe, malware-free.` },
-    ],
-  }),
+  head: ({ params }) => {
+    const pretty = params.packageName
+      .replace(/^com\.[^.]+\./, "")
+      .replace(/[._-]+/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+    const title = `${pretty} Mod APK — Free Download | Swift Mod`;
+    const desc = `Download ${pretty} Mod APK for Android. Premium features unlocked, unlimited resources, mod menu — free, safe and verified by Swift Mod.`;
+    const url = `https://swiftmod.lovable.app/app/${params.packageName}`;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { name: "keywords", content: `${pretty} mod apk, ${pretty} hack, ${pretty} unlimited, ${pretty} mod menu, ${pretty} free download android` },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:url", content: url },
+        { property: "og:type", content: "article" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
+      ],
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
 });
 
 interface AppFull {
