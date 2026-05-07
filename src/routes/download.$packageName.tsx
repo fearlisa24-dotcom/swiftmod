@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Check, Download, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppIcon } from "@/components/AppIcon";
+import { AdSlot } from "@/components/AdSlot";
 
 export const Route = createFileRoute("/download/$packageName")({
   component: DownloadPage,
@@ -79,6 +80,7 @@ function DownloadPage() {
 
   return (
     <div className="mx-auto max-w-xl space-y-6 py-6">
+      <AdSlot label="Advertisement" />
       <div className="rounded-lg border border-border bg-card p-6 text-center">
         <div className="mb-4 flex justify-center">
           <AppIcon
