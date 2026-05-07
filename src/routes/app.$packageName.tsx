@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { Star, ShieldCheck, Download, Zap, Check, ChevronRight, ThumbsUp, MessageSquare, ChevronDown } from "lucide-react";
+import { Star, ShieldCheck, Download, Zap, Check, ChevronRight, ThumbsUp, MessageSquare, ChevronDown, Smartphone, HardDrive, Calendar, Tag } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppIcon } from "@/components/AppIcon";
 import { SafetyBar } from "@/components/SafetyBar";
+import { AdSlot } from "@/components/AdSlot";
+import { AppCard, type AppRow } from "@/components/AppCard";
 import { formatDownloads } from "@/lib/format";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -66,6 +68,7 @@ function AppDetail() {
   const { user } = useAuth();
   const [app, setApp] = useState<AppFull | null>(null);
   const [versions, setVersions] = useState<VersionRow[]>([]);
+  const [related, setRelated] = useState<AppRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [versionOpen, setVersionOpen] = useState(false);
   const [comment, setComment] = useState("");
@@ -109,6 +112,14 @@ function AppDetail() {
           .order("released_on", { ascending: false });
         setVersions((v ?? []) as VersionRow[]);
         await loadComments(data.id);
+        const { data: rel } = await supabase
+          .from("apps")
+          .select("id,package_name,name,category,version,rating,downloads,mod_label,size_mb,icon_url")
+          .eq("category", data.category)
+          .neq("id", data.id)
+          .order("downloads", { ascending: false })
+          .limit(6);
+        setRelated((rel ?? []) as AppRow[]);
         if (user) {
           const { data: r } = await supabase
             .from("ratings")
@@ -245,8 +256,9 @@ function AppDetail() {
             )}
           </div>
 
-          <p className="mt-4 text-sm text-foreground/80">
-            {app.description ?? "No description provided."}
+          <p className="mt-4 whitespace-pre-line text-sm leading-6 text-foreground/80">
+            {app.description ||
+              `${app.name} is a popular ${app.category.toLowerCase()} ${app.type} on Android, downloaded by millions of players worldwide. The Swift Mod community provides a verified modded version with premium features unlocked, giving you the freedom to enjoy the full experience without paywalls or grind.\n\nThis modded APK is ideal for players who want to explore everything the title has to offer — from premium content and unlocked items to ad-free gameplay. Every release on Swift Mod is scanned for malware before listing and re-tested when a new game version drops, so you always get a clean, working file.\n\nDownload ${app.name} MOD APK v${app.version} below and follow our four-step install guide to get started in under two minutes.`}
           </p>
 
           <div className="mt-5 flex flex-wrap gap-3">
@@ -273,6 +285,78 @@ function AppDetail() {
       </div>
 
       <SafetyBar />
+
+      {/* MOD Features */}
+      <section className="rounded-lg border border-border bg-card p-5">
+        <h2 className="mb-3 text-sm font-bold">MOD Features</h2>
+        <ul className="grid gap-2 sm:grid-cols-2">
+          {[
+            app.mod_label ? `${app.mod_label} unlocked` : "Mod Menu unlocked",
+            "All premium content available for free",
+            "Ads removed for a clean experience",
+            "Anti-ban protection bundled in",
+            "Optimised for low-end Android devices",
+            "Auto-updated weekly by the Swift Mod team",
+          ].map((f) => (
+            <li key={f} className="flex items-start gap-2 text-sm text-foreground/90">
+              <Check className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={3} style={{ color: "#22C55E" }} />
+              <span>{f}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* Installation Guide */}
+      <section className="rounded-lg border border-border bg-card p-5">
+        <h2 className="mb-3 text-sm font-bold">How to Install</h2>
+        <ol className="space-y-3 text-sm text-foreground/90">
+          <li className="flex gap-3">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">1</span>
+            <span>Tap <strong>Download APK</strong> above and wait for the file to finish saving to your device.</span>
+          </li>
+          <li className="flex gap-3">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">2</span>
+            <span>Open <strong>Settings → Apps → Special access → Install unknown apps</strong> and allow your browser or file manager to install APKs.</span>
+          </li>
+          <li className="flex gap-3">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">3</span>
+            <span>Open the downloaded file. Review the requested permissions and tap <strong>Install</strong>.</span>
+          </li>
+          <li className="flex gap-3">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">4</span>
+            <span>Launch {app.name} from your home screen and enjoy the unlocked mod features.</span>
+          </li>
+        </ol>
+      </section>
+
+      {/* Additional Info */}
+      <section className="rounded-lg border border-border bg-card p-5">
+        <h2 className="mb-3 text-sm font-bold">Additional Information</h2>
+        <dl className="grid gap-3 text-sm sm:grid-cols-2">
+          <div className="flex items-center gap-2"><Tag className="h-4 w-4 text-muted-foreground" /><dt className="text-muted-foreground">Version</dt><dd className="ml-auto font-semibold">v{app.version}</dd></div>
+          <div className="flex items-center gap-2"><HardDrive className="h-4 w-4 text-muted-foreground" /><dt className="text-muted-foreground">Size</dt><dd className="ml-auto font-semibold">{app.size_mb} MB</dd></div>
+          <div className="flex items-center gap-2"><Smartphone className="h-4 w-4 text-muted-foreground" /><dt className="text-muted-foreground">Requires</dt><dd className="ml-auto font-semibold">Android 6.0+</dd></div>
+          <div className="flex items-center gap-2"><Calendar className="h-4 w-4 text-muted-foreground" /><dt className="text-muted-foreground">Updated</dt><dd className="ml-auto font-semibold">{app.updated_on}</dd></div>
+        </dl>
+      </section>
+
+      {/* Screenshots */}
+      <section className="rounded-lg border border-border bg-card p-5">
+        <h2 className="mb-3 text-sm font-bold">Screenshots</h2>
+        <div className="flex gap-3 overflow-x-auto">
+          {[1, 2, 3, 4].map((n) => (
+            <img
+              key={n}
+              src={`https://picsum.photos/seed/${app.package_name}-${n}/360/640`}
+              alt={`${app.name} screenshot ${n}`}
+              loading="lazy"
+              className="h-56 w-auto shrink-0 rounded-md border border-border"
+            />
+          ))}
+        </div>
+      </section>
+
+      <AdSlot label="Advertisement" />
 
       {/* Security */}
       <section className="rounded-lg border border-border bg-card p-5">
@@ -434,6 +518,18 @@ function AppDetail() {
           </ul>
         )}
       </section>
+
+      {/* Related Apps */}
+      {related.length > 0 && (
+        <section>
+          <h2 className="mb-3 text-sm font-bold text-foreground">Related {app.type === "app" ? "Apps" : "Games"}</h2>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-6">
+            {related.map((r) => (
+              <AppCard key={r.id} app={r} />
+            ))}
+          </div>
+        </section>
+      )}
     </article>
   );
 }

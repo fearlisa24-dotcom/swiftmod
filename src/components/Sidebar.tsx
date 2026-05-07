@@ -6,6 +6,7 @@ import {
   TrendingUp,
   Trophy,
   Hash,
+  BookOpen,
   Sword,
   Puzzle,
   Car,
@@ -13,9 +14,6 @@ import {
   Music,
   Camera,
   MessageCircle,
-  Crown,
-  ShieldCheck,
-  Download,
 } from "lucide-react";
 
 const MAIN = [
@@ -25,6 +23,7 @@ const MAIN = [
   { to: "/trending", label: "Trending", icon: TrendingUp },
   { to: "/rankings", label: "Top Charts", icon: Trophy },
   { to: "/topics", label: "Topics", icon: Hash },
+  { to: "/articles", label: "Articles", icon: BookOpen },
 ] as const;
 
 const CATEGORIES = [
@@ -82,37 +81,6 @@ export function Sidebar() {
             {label}
           </Link>
         ))}
-
-        <div className="mb-1 mt-4 px-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-          Status
-        </div>
-        <div className="rounded-md border border-border bg-background p-3">
-          <div className="flex items-center gap-2 text-xs font-bold text-foreground">
-            <ShieldCheck className="h-4 w-4" style={{ color: "#22C55E" }} />
-            All Mods Verified
-          </div>
-          <p className="mt-1 text-[11px] text-muted-foreground">
-            Every APK is scanned for malware before listing.
-          </p>
-        </div>
-
-        <a
-          href="#install-app"
-          onClick={(e) => {
-            e.preventDefault();
-            window.dispatchEvent(new Event("swiftmod:install"));
-          }}
-          className="mt-3 flex items-center justify-center gap-2 rounded-md px-3 py-2.5 text-sm font-bold text-white"
-          style={{ backgroundColor: "#22C55E" }}
-        >
-          <Download className="h-4 w-4" /> Install App
-        </a>
-
-        <div className="mt-3 rounded-md bg-gradient-to-br from-amber-50 to-orange-50 p-3 text-center">
-          <Crown className="mx-auto h-5 w-5 text-[#ff6d00]" />
-          <div className="mt-1 text-xs font-bold">Go Pro</div>
-          <p className="text-[11px] text-muted-foreground">Unlimited fast downloads.</p>
-        </div>
       </nav>
     </aside>
   );

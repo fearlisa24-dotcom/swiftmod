@@ -109,6 +109,45 @@ export type Database = {
         }
         Relationships: []
       }
+      articles: {
+        Row: {
+          author: string
+          category: string
+          content: string
+          created_at: string
+          id: string
+          published_at: string
+          slug: string
+          summary: string
+          thumbnail_url: string | null
+          title: string
+        }
+        Insert: {
+          author?: string
+          category?: string
+          content: string
+          created_at?: string
+          id?: string
+          published_at?: string
+          slug: string
+          summary: string
+          thumbnail_url?: string | null
+          title: string
+        }
+        Update: {
+          author?: string
+          category?: string
+          content?: string
+          created_at?: string
+          id?: string
+          published_at?: string
+          slug?: string
+          summary?: string
+          thumbnail_url?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
       comments: {
         Row: {
           app_id: string
