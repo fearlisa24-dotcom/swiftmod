@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrendingRouteImport } from './routes/trending'
 import { Route as TopicsRouteImport } from './routes/topics'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RankingsRouteImport } from './routes/rankings'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as GamesRouteImport } from './routes/games'
@@ -40,6 +41,11 @@ const TopicsRoute = TopicsRouteImport.update({
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RankingsRoute = RankingsRouteImport.update({
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/games': typeof GamesRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/rankings': typeof RankingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/topics': typeof TopicsRoute
   '/trending': typeof TrendingRoute
@@ -143,6 +150,7 @@ export interface FileRoutesByTo {
   '/games': typeof GamesRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/rankings': typeof RankingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/topics': typeof TopicsRoute
   '/trending': typeof TrendingRoute
@@ -163,6 +171,7 @@ export interface FileRoutesById {
   '/games': typeof GamesRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/rankings': typeof RankingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/topics': typeof TopicsRoute
   '/trending': typeof TrendingRoute
@@ -184,6 +193,7 @@ export interface FileRouteTypes {
     | '/games'
     | '/privacy-policy'
     | '/rankings'
+    | '/sitemap.xml'
     | '/terms'
     | '/topics'
     | '/trending'
@@ -203,6 +213,7 @@ export interface FileRouteTypes {
     | '/games'
     | '/privacy-policy'
     | '/rankings'
+    | '/sitemap.xml'
     | '/terms'
     | '/topics'
     | '/trending'
@@ -222,6 +233,7 @@ export interface FileRouteTypes {
     | '/games'
     | '/privacy-policy'
     | '/rankings'
+    | '/sitemap.xml'
     | '/terms'
     | '/topics'
     | '/trending'
@@ -242,6 +254,7 @@ export interface RootRouteChildren {
   GamesRoute: typeof GamesRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   RankingsRoute: typeof RankingsRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   TopicsRoute: typeof TopicsRoute
   TrendingRoute: typeof TrendingRoute
@@ -271,6 +284,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rankings': {
@@ -397,6 +417,7 @@ const rootRouteChildren: RootRouteChildren = {
   GamesRoute: GamesRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   RankingsRoute: RankingsRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   TopicsRoute: TopicsRoute,
   TrendingRoute: TrendingRoute,
@@ -407,3 +428,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
