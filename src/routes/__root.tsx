@@ -7,7 +7,7 @@ import { Footer } from "@/components/Footer";
 import { CookieBar } from "@/components/CookieBar";
 import { FloatingDownload } from "@/components/FloatingDownload";
 import { AuthProvider } from "@/hooks/useAuth";
-import { InstallPrompt } from "@/components/InstallPrompt";
+
 
 function NotFoundComponent() {
   return (
