@@ -518,6 +518,18 @@ function AppDetail() {
           </ul>
         )}
       </section>
+
+      {/* Related Apps */}
+      {related.length > 0 && (
+        <section>
+          <h2 className="mb-3 text-sm font-bold text-foreground">Related {app.type === "app" ? "Apps" : "Games"}</h2>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-6">
+            {related.map((r) => (
+              <AppCard key={r.id} app={r} />
+            ))}
+          </div>
+        </section>
+      )}
     </article>
   );
 }
