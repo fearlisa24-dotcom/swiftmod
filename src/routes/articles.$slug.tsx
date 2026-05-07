@@ -16,15 +16,25 @@ interface Article {
 
 export const Route = createFileRoute("/articles/$slug")({
   component: ArticleDetail,
-  head: ({ params }) => ({
-    meta: [
-      { title: `${params.slug.replace(/-/g, " ")} – Swift Mod` },
-      {
-        name: "description",
-        content: `Read this Swift Mod guide: ${params.slug.replace(/-/g, " ")}.`,
-      },
-    ],
-  }),
+  head: ({ params }) => {
+    const pretty = params.slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+    const title = `${pretty} | Swift Mod`;
+    const desc = `Read this Swift Mod guide: ${pretty}. Tips, install steps and mod APK insights from the Swift Mod team.`;
+    const url = `https://swiftmod.lovable.app/articles/${params.slug}`;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:url", content: url },
+        { property: "og:type", content: "article" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
+      ],
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
 });
 
 function ArticleDetail() {
@@ -56,10 +66,35 @@ function ArticleDetail() {
 
   return (
     <article className="mx-auto max-w-3xl space-y-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: article.title,
+            description: article.summary,
+            image: article.thumbnail_url || undefined,
+            author: { "@type": "Organization", name: article.author || "Swift Mod Team" },
+            publisher: {
+              "@type": "Organization",
+              name: "Swift Mod",
+              logo: { "@type": "ImageObject", url: "https://swiftmod.lovable.app/icon-512.png" },
+            },
+            datePublished: article.published_at,
+            dateModified: article.published_at,
+            mainEntityOfPage: {
+              "@type": "WebPage",
+              "@id": `https://swiftmod.lovable.app/articles/${article.slug}`,
+            },
+          }),
+        }}
+      />
       {article.thumbnail_url && (
         <img
           src={article.thumbnail_url}
           alt={article.title}
+          loading="lazy"
           className="h-64 w-full rounded-lg object-cover"
         />
       )}

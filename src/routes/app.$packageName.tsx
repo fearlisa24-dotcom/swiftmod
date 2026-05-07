@@ -11,12 +11,29 @@ import { useAuth } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/app/$packageName")({
   component: AppDetail,
-  head: ({ params }) => ({
-    meta: [
-      { title: `${params.packageName} – Download Mod APK | PlayMods` },
-      { name: "description", content: `Download the latest mod APK for ${params.packageName}. Verified safe, malware-free.` },
-    ],
-  }),
+  head: ({ params }) => {
+    const pretty = params.packageName
+      .replace(/^com\.[^.]+\./, "")
+      .replace(/[._-]+/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+    const title = `${pretty} Mod APK — Free Download | Swift Mod`;
+    const desc = `Download ${pretty} Mod APK for Android. Premium features unlocked, unlimited resources, mod menu — free, safe and verified by Swift Mod.`;
+    const url = `https://swiftmod.lovable.app/app/${params.packageName}`;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { name: "keywords", content: `${pretty} mod apk, ${pretty} hack, ${pretty} unlimited, ${pretty} mod menu, ${pretty} free download android` },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:url", content: url },
+        { property: "og:type", content: "article" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
+      ],
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
 });
 
 interface AppFull {
@@ -187,6 +204,31 @@ function AppDetail() {
 
   return (
     <article className="space-y-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: app.name,
+            operatingSystem: "Android",
+            applicationCategory: app.type === "app" ? "MobileApplication" : "GameApplication",
+            offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: app.rating,
+              ratingCount: Math.max(app.downloads, 1),
+              bestRating: "10",
+              worstRating: "1",
+            },
+            description: app.description || `${app.name} mod APK for Android.`,
+            softwareVersion: app.version,
+            fileSize: `${app.size_mb} MB`,
+            image: (app as AppFull & { icon_url?: string | null }).icon_url || undefined,
+            url: `https://swiftmod.lovable.app/app/${app.package_name}`,
+          }),
+        }}
+      />
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-muted-foreground">
         <Link to="/" className="hover:text-brand">Home</Link>
@@ -218,7 +260,7 @@ function AppDetail() {
           <div className="text-xs uppercase tracking-wide text-muted-foreground">
             {app.type} · {app.category}
           </div>
-          <h1 className="mt-1 text-2xl font-bold text-foreground">{app.name}</h1>
+          <h1 className="mt-1 text-2xl font-bold text-foreground">{app.name} Mod APK v{app.version}</h1>
 
           <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
             <span className="flex items-center gap-1">

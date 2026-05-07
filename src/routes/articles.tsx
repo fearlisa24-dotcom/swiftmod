@@ -15,21 +15,21 @@ interface Article {
 
 export const Route = createFileRoute("/articles")({
   component: ArticlesPage,
-  head: () => ({
-    meta: [
-      { title: "Articles & Mod APK Guides – Swift Mod" },
-      {
-        name: "description",
-        content:
-          "Read the latest mod APK guides, reviews, and redeem code roundups from the Swift Mod team.",
-      },
-      { property: "og:title", content: "Swift Mod Articles & Guides" },
-      {
-        property: "og:description",
-        content: "Mod APK guides, reviews, and redeem codes updated weekly.",
-      },
-    ],
-  }),
+  head: () => {
+    const t = "Mod APK Guides, News & Reviews | Swift Mod";
+    const d = "Read the latest mod APK guides, game reviews, redeem codes and news. Expert tips for getting the most from your modded Android games.";
+    return {
+      meta: [
+        { title: t },
+        { name: "description", content: d },
+        { property: "og:title", content: t },
+        { property: "og:description", content: d },
+        { name: "twitter:title", content: t },
+        { name: "twitter:description", content: d },
+      ],
+      links: [{ rel: "canonical", href: "https://swiftmod.lovable.app/articles" }],
+    };
+  },
 });
 
 function ArticlesPage() {

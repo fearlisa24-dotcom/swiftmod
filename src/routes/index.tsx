@@ -5,8 +5,25 @@ import { AppCard, AppRowItem, type AppRow } from "@/components/AppCard";
 import { SafetyBar } from "@/components/SafetyBar";
 import { HeroCarousel } from "@/components/HeroCarousel";
 
+const HOME_TITLE = "Swift Mod — Free Mod APKs for Android Games & Apps";
+const HOME_DESC =
+  "Download the best mod APKs for Android in 2025. Unlimited coins, gems, premium features unlocked for free. Safe, verified mods updated daily.";
+const HOME_URL = "https://swiftmod.lovable.app/";
+
 export const Route = createFileRoute("/")({
   component: HomePage,
+  head: () => ({
+    meta: [
+      { title: HOME_TITLE },
+      { name: "description", content: HOME_DESC },
+      { property: "og:title", content: HOME_TITLE },
+      { property: "og:description", content: HOME_DESC },
+      { property: "og:url", content: HOME_URL },
+      { name: "twitter:title", content: HOME_TITLE },
+      { name: "twitter:description", content: HOME_DESC },
+    ],
+    links: [{ rel: "canonical", href: HOME_URL }],
+  }),
 });
 
 function Section({ title, apps }: { title: string; apps: AppRow[] }) {
@@ -51,6 +68,7 @@ function HomePage() {
 
   return (
     <>
+      <h1 className="sr-only">Download Free Mod APKs for Android</h1>
       <div className="mb-6 grid gap-4 lg:grid-cols-[1fr_320px]">
         <HeroCarousel apps={featured} />
         <aside className="rounded-2xl border border-border bg-card p-4">
