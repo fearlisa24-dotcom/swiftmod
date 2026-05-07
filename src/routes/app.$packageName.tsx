@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { Star, ShieldCheck, Download, Zap, Check, ChevronRight, ThumbsUp, MessageSquare, ChevronDown } from "lucide-react";
+import { Star, ShieldCheck, Download, Zap, Check, ChevronRight, ThumbsUp, MessageSquare, ChevronDown, Smartphone, HardDrive, Calendar, Tag } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppIcon } from "@/components/AppIcon";
 import { SafetyBar } from "@/components/SafetyBar";
+import { AdSlot } from "@/components/AdSlot";
+import { AppCard, type AppRow } from "@/components/AppCard";
 import { formatDownloads } from "@/lib/format";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -66,6 +68,7 @@ function AppDetail() {
   const { user } = useAuth();
   const [app, setApp] = useState<AppFull | null>(null);
   const [versions, setVersions] = useState<VersionRow[]>([]);
+  const [related, setRelated] = useState<AppRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [versionOpen, setVersionOpen] = useState(false);
   const [comment, setComment] = useState("");
@@ -109,6 +112,14 @@ function AppDetail() {
           .order("released_on", { ascending: false });
         setVersions((v ?? []) as VersionRow[]);
         await loadComments(data.id);
+        const { data: rel } = await supabase
+          .from("apps")
+          .select("id,package_name,name,category,version,rating,downloads,mod_label,size_mb,icon_url")
+          .eq("category", data.category)
+          .neq("id", data.id)
+          .order("downloads", { ascending: false })
+          .limit(6);
+        setRelated((rel ?? []) as AppRow[]);
         if (user) {
           const { data: r } = await supabase
             .from("ratings")
