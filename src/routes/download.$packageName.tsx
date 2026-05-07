@@ -157,6 +157,7 @@ function DownloadPage() {
           Security Verified
         </div>
       </div>
+      <AdSlot label="Advertisement" />
     </div>
   );
 }
