@@ -204,6 +204,31 @@ function AppDetail() {
 
   return (
     <article className="space-y-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: app.name,
+            operatingSystem: "Android",
+            applicationCategory: app.type === "app" ? "MobileApplication" : "GameApplication",
+            offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: app.rating,
+              ratingCount: Math.max(app.downloads, 1),
+              bestRating: "10",
+              worstRating: "1",
+            },
+            description: app.description || `${app.name} mod APK for Android.`,
+            softwareVersion: app.version,
+            fileSize: `${app.size_mb} MB`,
+            image: (app as AppFull & { icon_url?: string | null }).icon_url || undefined,
+            url: `https://swiftmod.lovable.app/app/${app.package_name}`,
+          }),
+        }}
+      />
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-muted-foreground">
         <Link to="/" className="hover:text-brand">Home</Link>
