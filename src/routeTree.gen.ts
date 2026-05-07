@@ -11,13 +11,19 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrendingRouteImport } from './routes/trending'
 import { Route as TopicsRouteImport } from './routes/topics'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as RankingsRouteImport } from './routes/rankings'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as GamesRouteImport } from './routes/games'
+import { Route as DmcaRouteImport } from './routes/dmca'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ArticlesRouteImport } from './routes/articles'
 import { Route as AppsRouteImport } from './routes/apps'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DownloadPackageNameRouteImport } from './routes/download.$packageName'
+import { Route as ArticlesSlugRouteImport } from './routes/articles.$slug'
 import { Route as AppPackageNameRouteImport } from './routes/app.$packageName'
 import { Route as ApiPublicFetchDownloadRouteImport } from './routes/api/public/fetch-download'
 
@@ -31,9 +37,19 @@ const TopicsRoute = TopicsRouteImport.update({
   path: '/topics',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RankingsRoute = RankingsRouteImport.update({
   id: '/rankings',
   path: '/rankings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GamesRoute = GamesRouteImport.update({
@@ -41,9 +57,24 @@ const GamesRoute = GamesRouteImport.update({
   path: '/games',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DmcaRoute = DmcaRouteImport.update({
+  id: '/dmca',
+  path: '/dmca',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticlesRoute = ArticlesRouteImport.update({
+  id: '/articles',
+  path: '/articles',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppsRoute = AppsRouteImport.update({
@@ -66,6 +97,11 @@ const DownloadPackageNameRoute = DownloadPackageNameRouteImport.update({
   path: '/download/$packageName',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArticlesSlugRoute = ArticlesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => ArticlesRoute,
+} as any)
 const AppPackageNameRoute = AppPackageNameRouteImport.update({
   id: '/app/$packageName',
   path: '/app/$packageName',
@@ -81,12 +117,18 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/apps': typeof AppsRoute
+  '/articles': typeof ArticlesRouteWithChildren
   '/auth': typeof AuthRoute
+  '/contact': typeof ContactRoute
+  '/dmca': typeof DmcaRoute
   '/games': typeof GamesRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/rankings': typeof RankingsRoute
+  '/terms': typeof TermsRoute
   '/topics': typeof TopicsRoute
   '/trending': typeof TrendingRoute
   '/app/$packageName': typeof AppPackageNameRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
   '/download/$packageName': typeof DownloadPackageNameRoute
   '/api/public/fetch-download': typeof ApiPublicFetchDownloadRoute
 }
@@ -94,12 +136,18 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/apps': typeof AppsRoute
+  '/articles': typeof ArticlesRouteWithChildren
   '/auth': typeof AuthRoute
+  '/contact': typeof ContactRoute
+  '/dmca': typeof DmcaRoute
   '/games': typeof GamesRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/rankings': typeof RankingsRoute
+  '/terms': typeof TermsRoute
   '/topics': typeof TopicsRoute
   '/trending': typeof TrendingRoute
   '/app/$packageName': typeof AppPackageNameRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
   '/download/$packageName': typeof DownloadPackageNameRoute
   '/api/public/fetch-download': typeof ApiPublicFetchDownloadRoute
 }
@@ -108,12 +156,18 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/apps': typeof AppsRoute
+  '/articles': typeof ArticlesRouteWithChildren
   '/auth': typeof AuthRoute
+  '/contact': typeof ContactRoute
+  '/dmca': typeof DmcaRoute
   '/games': typeof GamesRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/rankings': typeof RankingsRoute
+  '/terms': typeof TermsRoute
   '/topics': typeof TopicsRoute
   '/trending': typeof TrendingRoute
   '/app/$packageName': typeof AppPackageNameRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
   '/download/$packageName': typeof DownloadPackageNameRoute
   '/api/public/fetch-download': typeof ApiPublicFetchDownloadRoute
 }
@@ -123,12 +177,18 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/apps'
+    | '/articles'
     | '/auth'
+    | '/contact'
+    | '/dmca'
     | '/games'
+    | '/privacy-policy'
     | '/rankings'
+    | '/terms'
     | '/topics'
     | '/trending'
     | '/app/$packageName'
+    | '/articles/$slug'
     | '/download/$packageName'
     | '/api/public/fetch-download'
   fileRoutesByTo: FileRoutesByTo
@@ -136,12 +196,18 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/apps'
+    | '/articles'
     | '/auth'
+    | '/contact'
+    | '/dmca'
     | '/games'
+    | '/privacy-policy'
     | '/rankings'
+    | '/terms'
     | '/topics'
     | '/trending'
     | '/app/$packageName'
+    | '/articles/$slug'
     | '/download/$packageName'
     | '/api/public/fetch-download'
   id:
@@ -149,12 +215,18 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/apps'
+    | '/articles'
     | '/auth'
+    | '/contact'
+    | '/dmca'
     | '/games'
+    | '/privacy-policy'
     | '/rankings'
+    | '/terms'
     | '/topics'
     | '/trending'
     | '/app/$packageName'
+    | '/articles/$slug'
     | '/download/$packageName'
     | '/api/public/fetch-download'
   fileRoutesById: FileRoutesById
@@ -163,9 +235,14 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AppsRoute: typeof AppsRoute
+  ArticlesRoute: typeof ArticlesRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ContactRoute: typeof ContactRoute
+  DmcaRoute: typeof DmcaRoute
   GamesRoute: typeof GamesRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   RankingsRoute: typeof RankingsRoute
+  TermsRoute: typeof TermsRoute
   TopicsRoute: typeof TopicsRoute
   TrendingRoute: typeof TrendingRoute
   AppPackageNameRoute: typeof AppPackageNameRoute
@@ -189,11 +266,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TopicsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/rankings': {
       id: '/rankings'
       path: '/rankings'
       fullPath: '/rankings'
       preLoaderRoute: typeof RankingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/games': {
@@ -203,11 +294,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GamesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dmca': {
+      id: '/dmca'
+      path: '/dmca'
+      fullPath: '/dmca'
+      preLoaderRoute: typeof DmcaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/articles': {
+      id: '/articles'
+      path: '/articles'
+      fullPath: '/articles'
+      preLoaderRoute: typeof ArticlesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/apps': {
@@ -238,6 +350,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DownloadPackageNameRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/articles/$slug': {
+      id: '/articles/$slug'
+      path: '/$slug'
+      fullPath: '/articles/$slug'
+      preLoaderRoute: typeof ArticlesSlugRouteImport
+      parentRoute: typeof ArticlesRoute
+    }
     '/app/$packageName': {
       id: '/app/$packageName'
       path: '/app/$packageName'
@@ -255,13 +374,30 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface ArticlesRouteChildren {
+  ArticlesSlugRoute: typeof ArticlesSlugRoute
+}
+
+const ArticlesRouteChildren: ArticlesRouteChildren = {
+  ArticlesSlugRoute: ArticlesSlugRoute,
+}
+
+const ArticlesRouteWithChildren = ArticlesRoute._addFileChildren(
+  ArticlesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AppsRoute: AppsRoute,
+  ArticlesRoute: ArticlesRouteWithChildren,
   AuthRoute: AuthRoute,
+  ContactRoute: ContactRoute,
+  DmcaRoute: DmcaRoute,
   GamesRoute: GamesRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
   RankingsRoute: RankingsRoute,
+  TermsRoute: TermsRoute,
   TopicsRoute: TopicsRoute,
   TrendingRoute: TrendingRoute,
   AppPackageNameRoute: AppPackageNameRoute,
@@ -271,12 +407,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

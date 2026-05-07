@@ -3,6 +3,9 @@ import appCss from "../styles.css?url";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
 import { MobileNav } from "@/components/MobileNav";
+import { Footer } from "@/components/Footer";
+import { CookieBar } from "@/components/CookieBar";
+import { FloatingDownload } from "@/components/FloatingDownload";
 import { AuthProvider } from "@/hooks/useAuth";
 import { InstallPrompt } from "@/components/InstallPrompt";
 
@@ -56,6 +59,13 @@ export const Route = createRootRoute({
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "apple-touch-icon", href: "/icon-192.png" },
     ],
+    scripts: [
+      {
+        async: true,
+        src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4578595376204328",
+        crossorigin: "anonymous",
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -85,12 +95,14 @@ function RootComponent() {
         {!bare && <Header />}
         <div className="mx-auto flex max-w-[1400px]">
           {!bare && <Sidebar />}
-          <main className="min-w-0 flex-1 px-3 py-4 pb-20 sm:px-4 sm:py-6 md:pb-6">
+          <main className="min-w-0 flex-1 px-3 py-4 pb-24 sm:px-4 sm:py-6 md:pb-6">
             <Outlet />
           </main>
         </div>
+        {!bare && <Footer />}
         {!bare && <MobileNav />}
-        <InstallPrompt />
+        {!bare && <FloatingDownload />}
+        {!bare && <CookieBar />}
       </div>
     </AuthProvider>
   );
