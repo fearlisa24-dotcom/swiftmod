@@ -66,14 +66,6 @@ function ArticleDetail() {
 
   return (
     <article className="mx-auto max-w-3xl space-y-6">
-      {article.thumbnail_url && (
-        <img
-          src={article.thumbnail_url}
-          alt={article.title}
-          className="h-64 w-full rounded-lg object-cover"
-        />
-      )}
-    <article className="mx-auto max-w-3xl space-y-6">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
