@@ -16,15 +16,25 @@ interface Article {
 
 export const Route = createFileRoute("/articles/$slug")({
   component: ArticleDetail,
-  head: ({ params }) => ({
-    meta: [
-      { title: `${params.slug.replace(/-/g, " ")} – Swift Mod` },
-      {
-        name: "description",
-        content: `Read this Swift Mod guide: ${params.slug.replace(/-/g, " ")}.`,
-      },
-    ],
-  }),
+  head: ({ params }) => {
+    const pretty = params.slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+    const title = `${pretty} | Swift Mod`;
+    const desc = `Read this Swift Mod guide: ${pretty}. Tips, install steps and mod APK insights from the Swift Mod team.`;
+    const url = `https://swiftmod.lovable.app/articles/${params.slug}`;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:url", content: url },
+        { property: "og:type", content: "article" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
+      ],
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
 });
 
 function ArticleDetail() {
