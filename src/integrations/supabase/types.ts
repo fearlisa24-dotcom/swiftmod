@@ -55,6 +55,7 @@ export type Database = {
           created_at: string
           description: string | null
           download_url: string | null
+          downloadable: boolean
           downloads: number
           icon_url: string | null
           id: string
@@ -74,6 +75,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           download_url?: string | null
+          downloadable?: boolean
           downloads?: number
           icon_url?: string | null
           id?: string
@@ -93,6 +95,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           download_url?: string | null
+          downloadable?: boolean
           downloads?: number
           icon_url?: string | null
           id?: string

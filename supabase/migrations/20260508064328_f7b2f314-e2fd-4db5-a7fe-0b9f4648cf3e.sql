@@ -1,0 +1,1 @@
+ALTER TABLE public.apps ADD COLUMN IF NOT EXISTS downloadable boolean NOT NULL DEFAULT true;

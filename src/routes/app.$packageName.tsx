@@ -51,6 +51,7 @@ interface AppFull {
   updated_on: string;
   icon_url?: string | null;
   download_url?: string | null;
+  downloadable?: boolean | null;
 }
 
 const SECURITY_ITEMS = ["No Virus", "Malware Scanned", "Verified Safe"];
@@ -304,24 +305,43 @@ function AppDetail() {
           </p>
 
           <div className="mt-5 flex flex-wrap gap-3">
-            <Link
-              to="/download/$packageName"
-              params={{ packageName: app.package_name }}
-              className="inline-flex items-center gap-2 rounded-lg px-6 py-3 text-base font-bold text-white transition-opacity hover:opacity-90"
-              style={{ backgroundColor: "#00c853" }}
-            >
-              <Download className="h-5 w-5" />
-              Download APK v{app.version} ({app.size_mb} MB)
-            </Link>
-            <Link
-              to="/download/$packageName"
-              params={{ packageName: app.package_name }}
-              className="inline-flex items-center gap-2 rounded-lg border border-primary bg-card px-6 py-3 text-base font-bold text-primary transition-colors hover:bg-primary/5"
-            >
-              <ShieldCheck className="h-5 w-5" />
-              <Zap className="h-5 w-5" />
-              Fast Download
-            </Link>
+            {app.downloadable !== false ? (
+              <>
+                <Link
+                  to="/download/$packageName"
+                  params={{ packageName: app.package_name }}
+                  className="inline-flex items-center gap-2 rounded-lg px-6 py-3 text-base font-bold text-white transition-opacity hover:opacity-90"
+                  style={{ backgroundColor: "#00c853" }}
+                >
+                  <Download className="h-5 w-5" />
+                  Download APK v{app.version} ({app.size_mb} MB)
+                </Link>
+                <Link
+                  to="/download/$packageName"
+                  params={{ packageName: app.package_name }}
+                  className="inline-flex items-center gap-2 rounded-lg border border-primary bg-card px-6 py-3 text-base font-bold text-primary transition-colors hover:bg-primary/5"
+                >
+                  <ShieldCheck className="h-5 w-5" />
+                  <Zap className="h-5 w-5" />
+                  Fast Download
+                </Link>
+              </>
+            ) : (
+              <div className="w-full rounded-lg border border-border bg-muted/40 p-4 text-sm">
+                <p className="font-semibold text-foreground">Download not available</p>
+                <p className="mt-1 text-muted-foreground">
+                  We couldn't source this APK directly. Try searching on APKPure:
+                </p>
+                <a
+                  href={`https://apkpure.com/search?q=${encodeURIComponent(app.name)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+                >
+                  Search “{app.name}” on APKPure
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>
