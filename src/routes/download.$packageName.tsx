@@ -19,6 +19,8 @@ interface AppRow {
   icon_url: string | null;
   description: string | null;
   downloads: number;
+  download_url: string | null;
+  downloadable: boolean | null;
 }
 
 const COUNT = 5;
@@ -38,7 +40,7 @@ function DownloadPage() {
   useEffect(() => {
     supabase
       .from("apps")
-      .select("id,package_name,name,version,size_mb,mod_label,icon_url,description,downloads")
+      .select("id,package_name,name,version,size_mb,mod_label,icon_url,description,downloads,download_url,downloadable")
       .eq("package_name", packageName)
       .maybeSingle()
       .then(({ data }) => {
@@ -60,7 +62,15 @@ function DownloadPage() {
       .from("apps")
       .update({ downloads: (app.downloads ?? 0) + 1 })
       .eq("id", app.id);
-    window.location.href = `/api/public/fetch-download?pkg=${encodeURIComponent(app.package_name)}`;
+    if (!app.download_url) return;
+    const isDirectApk = /\.apk(\?|$)/i.test(app.download_url);
+    if (isDirectApk) {
+      // Stream through our proxy so the browser saves it as the app's APK.
+      window.location.href = `/api/public/fetch-download?pkg=${encodeURIComponent(app.package_name)}`;
+    } else {
+      // APKPure (or other source) page — open in new tab.
+      window.open(app.download_url, "_blank", "noopener,noreferrer");
+    }
   };
 
   if (loading) return <div className="py-20 text-center text-muted-foreground">Loading…</div>;
