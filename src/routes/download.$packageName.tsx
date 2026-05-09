@@ -146,7 +146,7 @@ function DownloadPage() {
               style={{ backgroundColor: "#22C55E" }}
             >
               <Download className="h-5 w-5" />
-              {/\.apk(\?|$)/i.test(app.download_url) ? "Download APK" : "Get on APKPure"}
+              Download APK
             </button>
           )}
         </div>
