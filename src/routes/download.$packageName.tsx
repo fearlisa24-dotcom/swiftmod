@@ -56,21 +56,10 @@ function DownloadPage() {
     return () => clearTimeout(t);
   }, [seconds, loading, app]);
 
-  const startDownload = async () => {
+  const startDownload = () => {
     if (!app) return;
-    await supabase
-      .from("apps")
-      .update({ downloads: (app.downloads ?? 0) + 1 })
-      .eq("id", app.id);
-    if (!app.download_url) return;
-    const isDirectApk = /\.apk(\?|$)/i.test(app.download_url);
-    if (isDirectApk) {
-      // Stream through our proxy so the browser saves it as the app's APK.
-      window.location.href = `/api/public/fetch-download?pkg=${encodeURIComponent(app.package_name)}`;
-    } else {
-      // APKPure (or other source) page — open in new tab.
-      window.open(app.download_url, "_blank", "noopener,noreferrer");
-    }
+    // Always go through our proxy; it scrapes/streams the real APK from DB.
+    window.location.href = `/api/public/fetch-download?pkg=${encodeURIComponent(app.package_name)}`;
   };
 
   if (loading) return <div className="py-20 text-center text-muted-foreground">Loading…</div>;
@@ -125,22 +114,7 @@ function DownloadPage() {
         </ul>
 
         <div className="mt-8 flex flex-col items-center">
-          {app.downloadable === false || !app.download_url ? (
-            <div className="w-full rounded-lg border border-border bg-muted/40 p-4 text-sm">
-              <p className="font-semibold text-foreground">Download not available</p>
-              <p className="mt-1 text-muted-foreground">
-                We couldn't source this APK directly. Try APKPure:
-              </p>
-              <a
-                href={`https://apkpure.com/search?q=${encodeURIComponent(app.name)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
-              >
-                Search on APKPure
-              </a>
-            </div>
-          ) : !ready ? (
+          {!ready ? (
             <>
               <div className="relative h-32 w-32">
                 <svg viewBox="0 0 120 120" className="h-32 w-32 -rotate-90">
