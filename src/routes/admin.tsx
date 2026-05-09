@@ -90,6 +90,58 @@ function AdminPage() {
     }
   };
 
+  const slugify = (s: string) =>
+    s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+  const backfillUrls = async () => {
+    setBusy("backfill");
+    try {
+      const { data: rows, error } = await supabase
+        .from("apps")
+        .select("id,name,package_name,type,download_url");
+      if (error) throw error;
+      const targets = (rows ?? []).filter(
+        (r: any) => !r.download_url || !/\.apk(\?|$)/i.test(r.download_url),
+      );
+      append(`backfill → ${targets.length} apps need URLs`);
+      let fixed = 0;
+      for (let i = 0; i < targets.length; i++) {
+        const a: any = targets[i];
+        let url: string | null = null;
+        if (a.type === "game") {
+          // Try playmods scrape via our own server route.
+          try {
+            const res = await fetch(
+              `/api/public/fetch-download?pkg=${encodeURIComponent(a.package_name)}&probe=1`,
+              { method: "HEAD", redirect: "manual" },
+            );
+            // Re-read row to see if handler saved a url.
+            const { data: fresh } = await supabase
+              .from("apps")
+              .select("download_url")
+              .eq("id", a.id)
+              .maybeSingle();
+            url = fresh?.download_url ?? null;
+          } catch {}
+        }
+        if (!url) {
+          url = `https://apkpure.com/${slugify(a.name)}/${a.package_name}`;
+          await supabase.from("apps").update({ download_url: url }).eq("id", a.id);
+        }
+        fixed++;
+        if (i % 5 === 0) append(`backfill → fixed ${fixed} / ${targets.length}`);
+      }
+      append(`backfill → done. Fixed ${fixed} / ${targets.length}`);
+      alert(`Backfill complete: ${fixed} / ${targets.length}`);
+      refreshCount();
+    } catch (e: any) {
+      append(`backfill → error: ${e.message}`);
+      alert(`Backfill failed: ${e.message}`);
+    } finally {
+      setBusy(null);
+    }
+  };
+
   const btn =
     "w-full rounded-lg bg-green-600 px-6 py-5 text-lg font-bold text-white transition-colors hover:bg-green-500 disabled:opacity-50 disabled:cursor-not-allowed";
 
@@ -106,6 +158,9 @@ function AdminPage() {
         </div>
 
         <div className="mt-6 space-y-3">
+          <button className={btn} disabled={!!busy} onClick={backfillUrls}>
+            {busy === "backfill" ? "Backfilling…" : "Backfill Download URLs"}
+          </button>
           <button className={btn} disabled={!!busy} onClick={() => callFn("crawl-playmods")}>
             {busy === "crawl-playmods" ? "Crawling…" : "Crawl Games from PlayMods"}
           </button>
