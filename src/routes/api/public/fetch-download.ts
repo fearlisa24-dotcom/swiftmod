@@ -88,18 +88,19 @@ export const Route = createFileRoute("/api/public/fetch-download")({
         }
 
         if (!finalUrl) {
-          // Fallback: redirect to APKPure search/page so the user always gets somewhere useful.
-          const nameSlug = slugify(app.name);
-          const apkpure = `https://apkpure.com/${nameSlug}/${app.package_name}`;
-          // Persist so the app detail page can show a Get-on-APKPure CTA next time.
-          await supabaseAdmin
-            .from("apps")
-            .update({ download_url: apkpure })
-            .eq("id", app.id);
-          return new Response(null, {
-            status: 302,
-            headers: { Location: apkpure, "Access-Control-Allow-Origin": "*" },
-          });
+          return new Response(
+            JSON.stringify({
+              error: "unavailable",
+              message: "Download temporarily unavailable. Please try again in a few minutes.",
+            }),
+            {
+              status: 503,
+              headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+              },
+            },
+          );
         }
 
         // Increment download counter (fire and forget)
