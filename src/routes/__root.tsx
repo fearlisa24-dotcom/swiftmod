@@ -1,4 +1,11 @@
-import { Outlet, Link, createRootRoute, HeadContent, Scripts, useLocation } from "@tanstack/react-router";
+import {
+  Outlet,
+  Link,
+  createRootRoute,
+  HeadContent,
+  Scripts,
+  useLocation,
+} from "@tanstack/react-router";
 import appCss from "../styles.css?url";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
@@ -7,7 +14,6 @@ import { Footer } from "@/components/Footer";
 import { CookieBar } from "@/components/CookieBar";
 import { FloatingDownload } from "@/components/FloatingDownload";
 import { AuthProvider } from "@/hooks/useAuth";
-
 
 function NotFoundComponent() {
   return (
@@ -36,6 +42,13 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+
+      // ✅ YOUR ADDED META TAG
+      {
+        name: "9b4c43d34bb7a50e7b3397f21ba8bb6cf16e0eb0",
+        content: "9b4c43d34bb7a50e7b3397f21ba8bb6cf16e0eb0",
+      },
+
       { name: "google-adsense-account", content: "ca-pub-4578595376204328" },
       { name: "theme-color", content: "#22C55E" },
       { name: "robots", content: "index, follow" },
@@ -76,7 +89,8 @@ export const Route = createRootRoute({
             "@type": "SearchAction",
             target: {
               "@type": "EntryPoint",
-              urlTemplate: "https://swiftmod.lovable.app/?q={search_term_string}",
+              urlTemplate:
+                "https://swiftmod.lovable.app/?q={search_term_string}",
             },
             "query-input": "required name=search_term_string",
           },
@@ -106,6 +120,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { pathname } = useLocation();
   const bare = pathname === "/auth";
+
   return (
     <AuthProvider>
       <div className="min-h-screen bg-background">
