@@ -42,6 +42,8 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      // Added Referrer Policy
+      { name: "referrer", content: "no-referrer-when-downgrade" },
       {
         name: "9b4c43d34bb7a50e7b3397f21ba8bb6cf16e0eb0",
         content: "9b4c43d34bb7a50e7b3397f21ba8bb6cf16e0eb0",
