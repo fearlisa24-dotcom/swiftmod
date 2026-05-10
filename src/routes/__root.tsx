@@ -43,6 +43,11 @@ export const Route = createRootRoute({
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "referrer", content: "no-referrer-when-downgrade" },
+      // Google Site Verification
+      {
+        name: "google-site-verification",
+        content: "EU21UggXxwCj-sxwHo5S0340Ys04RgjairmkRaRXOcM",
+      },
       // Monetag Verification
       { name: "monetag", content: "121318edd2e9e18fca57ae6d50f9b2c6" },
       {
