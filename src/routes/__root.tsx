@@ -42,14 +42,10 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-
-      // ✅ YOUR ADDED META TAG
       {
         name: "9b4c43d34bb7a50e7b3397f21ba8bb6cf16e0eb0",
         content: "9b4c43d34bb7a50e7b3397f21ba8bb6cf16e0eb0",
       },
-
-      { name: "google-adsense-account", content: "ca-pub-4578595376204328" },
       { name: "theme-color", content: "#22C55E" },
       { name: "robots", content: "index, follow" },
       { name: "mobile-web-app-capable", content: "yes" },
@@ -72,6 +68,18 @@ export const Route = createRootRoute({
       { rel: "preconnect", href: "https://nhksomegcjsowouepbas.supabase.co" },
     ],
     scripts: [
+      {
+        children: `(function(qcasw){
+          var d = document,
+              s = d.createElement('script'),
+              l = d.scripts[d.scripts.length - 1];
+          s.settings = qcasw || {};
+          s.src = "//untimely-hello.com/bHXjV.s/dfGglG0qYNWVcY/de/mx9DuSZcUDlVkPPKT-ccwWMozXET2AMSj/UIt_NVzFAOzVMcT/Yhy-ORQS";
+          s.async = true;
+          s.referrerPolicy = 'no-referrer-when-downgrade';
+          l.parentNode.insertBefore(s, l);
+        })({})`,
+      },
       {
         async: true,
         src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4578595376204328",
