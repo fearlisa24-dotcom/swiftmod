@@ -68,7 +68,7 @@ export const Route = createRootRoute({
       { rel: "preconnect", href: "https://nhksomegcjsowouepbas.supabase.co" },
     ],
     scripts: [
-      // First Third-Party Script
+      // First Script (untimely-hello.com - bHXjV)
       {
         children: `(function(qcasw){
           var d = document,
@@ -81,10 +81,23 @@ export const Route = createRootRoute({
           l.parentNode.insertBefore(s, l);
         })({})`,
       },
-      // NEW Script from bony-teaching.com
+      // Second Script (bony-teaching.com)
       {
         src: "https://bony-teaching.com/b/3KV/0jP.3Xp/vEbnmEVKJYZlD-0T3EMsDyM/xuN-jjQNxsLATichwAMozfEg2_NaDIUN",
         async: true,
+      },
+      // NEW Third Script (untimely-hello.com - bOXHV)
+      {
+        children: `(function(dxudy){
+          var d = document,
+              s = d.createElement('script'),
+              l = d.scripts[d.scripts.length - 1];
+          s.settings = dxudy || {};
+          s.src = "//untimely-hello.com/bOXHV.spd/GmlQ0JYRWUcc/fe_my9/ubZAUtlZkHP/TScPwDMUzBEC2tNdD/ketkNgznAjzxMXT/Yj1oMRwR";
+          s.async = true;
+          s.referrerPolicy = 'no-referrer-when-downgrade';
+          l.parentNode.insertBefore(s, l);
+        })({})`,
       },
       {
         async: true,
