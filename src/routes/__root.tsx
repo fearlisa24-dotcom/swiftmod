@@ -76,7 +76,11 @@ export const Route = createRootRoute({
       { rel: "preconnect", href: "https://nhksomegcjsowouepbas.supabase.co" },
     ],
     scripts: [
-      // NEW: Monetag Main Ad Tag
+      // NEW: Monetag Vignette Script
+      {
+        children: `(function(s){s.dataset.zone='10987206',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`,
+      },
+      // Monetag Main Ad Tag
       {
         src: "https://quge5.com/88/tag.min.js",
         async: true,
